@@ -14,9 +14,9 @@ router.get(
   "/getSingleCleanerById/:id",
   cleanerControllers.getSingleCleanerById
 );
-router.patch("/updateCleaner", cleanerControllers.updateCleaner);
+router.patch("/updateCleaner/:id", cleanerControllers.updateCleaner);
 router.post(
-  "/givingReviewAndRatingToCleaner",
+  "/givingReviewAndRatingToCleaner/:id",
   cleanerControllers.givingReviewAndRatingToCleaner
 );
 router.post("/loginWithGoogle", cleanerControllers.loginWithGoogle);

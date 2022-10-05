@@ -1,67 +1,37 @@
-const Cleaner = require("../models/Cleaner");
+const Buyer = require("../models/Buyer");
 const bcrypt = require("bcryptjs");
 
-const addCleaner = async (req, res) => {
-  const {
-    username,
-    password,
-    city,
-    name,
-    pricePerHour,
-    currency,
-    rating,
-    reviews,
-    experienceInYear,
-    memberSince,
-    isOnline,
-    languages,
-    services,
-    isCertified,
-    policeClearanceCheck,
-    petFriendly,
-    singleMaleClient,
-    bio,
-  } = req.body;
+const addBuyer = async (req, res) => {
+  const { username, password, city, name, favouriteSellers, memberSince } =
+    req.body;
   const Photo = req.file.filename;
   if (Photo === "" || Photo === null || Photo === undefined) {
     return res.send({ success: false, error: "picture is required" });
   }
 
   try {
-    const isExist = await Cleaner.findOne({ username });
+    const isExist = await Buyer.findOne({ username });
     if (isExist) {
       return res.send({ success: false, error: "user already exists" });
     }
-    const newCleaner = await new Cleaner({
+    const newBuyer = await new Buyer({
       username,
       password,
       city,
       Photo,
       name,
-      pricePerHour,
-      currency,
-      rating,
-      reviews,
-      experienceInYear,
+      favouriteSellers,
       memberSince,
-      isOnline,
-      languages,
-      services,
-      isCertified,
-      policeClearanceCheck,
-      petFriendly,
-      singleMaleClient,
-      bio,
     }).save();
-    res.send(newCleaner);
+    res.send(newBuyer);
   } catch (error) {
     res.send({ success: false, error: error.message });
   }
 };
-const loginCleaner = async (req, res) => {
+const loginBuyer = async (req, res) => {
   const { username, password } = req.body;
   try {
-    const isExist = await Cleaner.findOne({ username });
+    const isExist = await Buyer.findOne({ username });
     if (isExist) {
       const isMatch = await bcrypt.compare(password, isExist.password);
       if (isMatch) {
@@ -78,69 +48,85 @@ const loginCleaner = async (req, res) => {
     res.send({ success: false, error: error.message });
   }
 };
-const deleteCleaner = async (req, res) => {
-  const { id } = req.body;
+const deleteBuyer = async (req, res) => {
+  const { id } = req.params;
   try {
-    const removeCleaner = await Cleaner.findByIdAndDelete(id);
-    if (removeCleaner) {
+    const removeBuyer = await Buyer.findByIdAndDelete(id);
+    if (removeBuyer) {
       return res.send({
         success: true,
-        message: "Cleaner is deleted successfully",
+        message: "Buyer is deleted successfully",
       });
     }
   } catch (error) {
     res.send({ success: false, error: error.message });
   }
 };
-const getAllCleaners = async (req, res) => {
+const getAllBuyers = async (req, res) => {
   try {
-    const allCleaners = await Cleaner.find({});
-    if (allCleaners) {
-      return res.send({ success: true, data: allCleaners });
+    const allBuyers = await Buyer.find({});
+    if (allBuyers) {
+      return res.send({ success: true, data: allBuyers });
     }
   } catch (error) {
     res.send({ success: false, error: error.message });
   }
 };
-const getSingleCleanerById = async (req, res) => {
+const getSingleBuyerWithId = async (req, res) => {
   const { id } = req.params;
   try {
-    const cleaner = await Cleaner.findById(id);
-    if (cleaner) {
-      return res.send({ success: true, data: cleaner });
+    const buyer = await Buyer.findById(id);
+    if (buyer) {
+      return res.send({ success: true, data: buyer });
     }
   } catch (error) {
     res.send({ success: false, error: error.message });
   }
 };
-const updateCleaner = async (req, res) => {
+const updateBuyer = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const updateCleaner = await Cleaner.findByIdAndUpdate(id, req.body, {
+    const updateBuyer = await Buyer.findByIdAndUpdate(id, req.body, {
       new: true,
     });
-    if (updateCleaner) {
+    if (updateBuyer) {
       return res.send({ success: true, message: "profile update!!" });
     }
   } catch (error) {
     res.send({ success: false, error: error.message });
   }
 };
-const givingReviewAndRatingToCleaner = async (req, res) => {
-  const { rating, review } = req.body;
+const bookCleaner = async (req, res) => {
+  const { cleanerId } = req.body;
   const { id } = req.params;
   try {
-    const { reviews } = await Cleaner.findOne({ _id: id }).select({
-      _id: 0,
-      reviews: 1,
-    });
-    const cleaner = await Cleaner.findByIdAndUpdate(
+    const bookedCleaner = await Buyer.findByIdAndUpdate(
       id,
-      { rating, reviews: [...reviews, review] },
+      { bookedCleaner: cleanerId },
       { new: true }
     );
-    if (cleaner) return res.send({ success: true, updatedData: cleaner });
+    if (bookedCleaner) return res.send({ success: true, bookedCleaner });
+  } catch (error) {
+    res.send({ success: false, error: error.message });
+  }
+};
+const addToFavourite = async (req, res) => {
+  const { id } = req.params;
+  const { cleanerId } = req.body;
+  try {
+    const { favouriteSellers } = await Buyer.findOne({ _id: id }).select({
+      _id: 0,
+      favouriteSellers: 1,
+    });
+    const addFavourite = await Buyer.findByIdAndUpdate(
+      id,
+      { favouriteSellers: [...favouriteSellers, cleanerId] },
+      { new: true }
+    );
+    if (addFavourite) {
+      return res.send({ success: true, addFavourite });
+    }
   } catch (error) {
     res.send({ success: false, error: error.message });
   }
@@ -150,14 +136,15 @@ const loginWithFacebook = async (req, res) => {};
 const loginWithTwitter = async (req, res) => {};
 
 module.exports = {
-  addCleaner,
+  addBuyer,
   loginWithTwitter,
   loginWithFacebook,
   loginWithGoogle,
-  givingReviewAndRatingToCleaner,
-  loginCleaner,
-  deleteCleaner,
-  getAllCleaners,
-  getSingleCleanerById,
-  updateCleaner,
+  loginBuyer,
+  deleteBuyer,
+  getAllBuyers,
+  getSingleBuyerWithId,
+  updateBuyer,
+  bookCleaner,
+  addToFavourite,
 };
