@@ -6,6 +6,7 @@ const dbconnection = require("./database/dbconnection");
 const cleanerRoutes = require("./routes/cleanerRoutes");
 const buyerRoutes = require("./routes/buyerRoutes");
 const adminroutes = require("./routes/adminRoutes");
+const { text } = require("body-parser");
 
 const app = express();
 // dbconnection();
@@ -23,3 +24,4 @@ app.use("/admin", adminroutes);
 app.listen(process.env.PORT, () => {
   console.log(`THE SERVER IS UP AND RUNNING AT ${process.env.PORT} `);
 });
+
