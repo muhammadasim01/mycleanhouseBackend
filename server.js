@@ -9,7 +9,7 @@ const adminroutes = require("./routes/adminRoutes");
 const { text } = require("body-parser");
 
 const app = express();
-// dbconnection();
+dbconnection();
 
 app.get("/",(req,res)=>{
   res.send('CLEAN HOUSE ADMIN PANEL')
