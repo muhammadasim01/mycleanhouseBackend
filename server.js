@@ -8,7 +8,11 @@ const buyerRoutes = require("./routes/buyerRoutes");
 const adminroutes = require("./routes/adminRoutes");
 
 const app = express();
-dbconnection();
+// dbconnection();
+
+app.get("/",(req,res)=>{
+  res.send('CLEAN HOUSE ADMIN PANEL')
+})
 
 app.use(cors());
 app.use(bodyParser.json());
