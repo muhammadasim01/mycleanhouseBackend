@@ -11,9 +11,9 @@ const { text } = require("body-parser");
 const app = express();
 dbconnection();
 
-app.get("/",(req,res)=>{
-  res.send('CLEAN HOUSE ADMIN PANEL')
-})
+app.get("/", (req, res) => {
+  res.send("CLEAN HOUSE ADMIN PANEL");
+});
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -24,4 +24,3 @@ app.use("/admin", adminroutes);
 app.listen(process.env.PORT, () => {
   console.log(`THE SERVER IS UP AND RUNNING AT ${process.env.PORT} `);
 });
-

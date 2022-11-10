@@ -2,13 +2,17 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const buyerSchema = new mongoose.Schema({
-  username: {
+  email: {
     type: String,
     required: true,
   },
   password: {
     type: String,
     required: true,
+  },
+  isEmailVerified: {
+    type: Boolean,
+    default: false,
   },
   city: {
     type: String,
@@ -18,7 +22,11 @@ const buyerSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  name: {
+  fitstName: {
+    type: String,
+    required: true,
+  },
+  lastName: {
     type: String,
     required: true,
   },
@@ -32,6 +40,11 @@ const buyerSchema = new mongoose.Schema({
       type: String,
     },
   ],
+  country: {
+    required: true,
+    type: String,
+  },
+  phone: { type: String, required: true },
   tokens: [
     {
       token: {
@@ -42,6 +55,15 @@ const buyerSchema = new mongoose.Schema({
   ],
   bookedCleaner: {
     CleanerId: String,
+  },
+  howDidYouHearAboutUs: {
+    type: String,
+  },
+  notifyMe: {
+    type: Boolean,
+  },
+  code: {
+    type: Number,
   },
 });
 

@@ -1,33 +1,77 @@
 const Buyer = require("../models/Buyer");
 const bcrypt = require("bcryptjs");
+const sendEmail = require("../helpers/sendmail");
+const otpGenerator = require("otp-generator");
 
 const addBuyer = async (req, res) => {
-  const { username, password, city, name, favouriteSellers, memberSince } =
-    req.body;
-  const Photo = req.file.filename;
-  if (Photo === "" || Photo === null || Photo === undefined) {
-    return res.send({ success: false, error: "picture is required" });
-  }
+  const {
+    firstName,
+    lastName,
+    email,
+    password,
+    country,
+    phone,
+    howDidYouHearAboutUs,
+    notifyMe,
+  } = req.body;
+  // const Photo = req.file.filename;
+  // if (Photo === "" || Photo === null || Photo === undefined) {
+  //   return res.send({ success: false, error: "picture is required" });
+  // }
 
   try {
     const isExist = await Buyer.findOne({ username });
     if (isExist) {
       return res.send({ success: false, error: "user already exists" });
     }
+    const code = otpGenerator.generate(4, {
+      upperCaseAlphabets: false,
+      specialChars: false,
+    });
     const newBuyer = await new Buyer({
-      username,
+      firstName,
+      lastName,
+      email,
       password,
-      city,
-      Photo,
-      name,
-      favouriteSellers,
-      memberSince,
+      country,
+      phone,
+      howDidYouHearAboutUs,
+      notifyMe,
+      code,
     }).save();
+    sendEmail(
+      email,
+      res,
+      `your verification code is here ${code}`,
+      "verfication user"
+    );
     res.send(newBuyer);
   } catch (error) {
     res.send({ success: false, error: error.message });
   }
 };
+
+const verifyBuyer = async (req, res) => {
+  const { code } = req.body;
+  const { email } = req.params;
+  try {
+    const isExist = await Buyer.findOne({ email });
+    if (isExist) {
+      if (isExist.code === code) {
+        res.send("verified");
+      } else {
+        res.send("wrong otp");
+      }
+    } else {
+      res.send("something went wrong");
+    }
+  } catch (error) {
+    res.send(error.message);
+  }
+};
+
+const resendCode = async (req, res) => {};
+
 const loginBuyer = async (req, res) => {
   const { username, password } = req.body;
   try {
@@ -131,6 +175,10 @@ const addToFavourite = async (req, res) => {
     res.send({ success: false, error: error.message });
   }
 };
+const sendMail = async (req, res) => {
+  const { email } = req.params;
+  sendEmail(email, res);
+};
 const loginWithGoogle = async (req, res) => {};
 const loginWithFacebook = async (req, res) => {};
 const loginWithTwitter = async (req, res) => {};
@@ -147,4 +195,6 @@ module.exports = {
   updateBuyer,
   bookCleaner,
   addToFavourite,
+  sendMail,
+  verifyBuyer,
 };
