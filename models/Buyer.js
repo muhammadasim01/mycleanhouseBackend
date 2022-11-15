@@ -22,7 +22,7 @@ const buyerSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  fitstName: {
+  firstName: {
     type: String,
     required: true,
   },
