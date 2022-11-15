@@ -248,3 +248,10 @@ const bookedServiceSchema = new mongoose.Schema({
     type: Number,
   },
 });
+
+const bookedService = new mongoose.model(
+  "bookedService",
+  bookedServiceSchema,
+  "bookedService"
+);
+module.exports = bookedService;
