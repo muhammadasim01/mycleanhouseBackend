@@ -7,6 +7,7 @@ const cleanerRoutes = require("./routes/cleanerRoutes");
 const buyerRoutes = require("./routes/buyerRoutes");
 const adminroutes = require("./routes/adminRoutes");
 const bookServiceroutes = require("./routes/bookedServiceRoutes");
+const blogRoutes = require("./routes/blogRoute");
 const { text } = require("body-parser");
 
 const app = express();
@@ -21,6 +22,7 @@ app.use(bodyParser.json());
 app.use("/cleaner", cleanerRoutes);
 app.use("/buyer", buyerRoutes);
 app.use("/admin", adminroutes);
+app.use("/blog", blogRoutes);
 app.use(bookServiceroutes);
 
 app.listen(process.env.PORT, () => {
