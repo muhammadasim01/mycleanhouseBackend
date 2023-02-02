@@ -1,6 +1,6 @@
 const Chat = require("../models/Chat");
 
-export const createChat = async (req, res) => {
+const createChat = async (req, res) => {
   const newChat = new Chat({
     members: [req.body.senderId, req.body.receiverId],
   });
@@ -12,7 +12,7 @@ export const createChat = async (req, res) => {
   }
 };
 
-export const userChats = async (req, res) => {
+const userChats = async (req, res) => {
   try {
     const chat = await Chat.find({
       members: { $in: [req.params.userId] },
@@ -22,7 +22,7 @@ export const userChats = async (req, res) => {
     res.status(500).json(error);
   }
 };
-export const findChat = async (req, res) => {
+const findChat = async (req, res) => {
   try {
     const chat = await Chat.findOne({
       members: { $all: [req.params.firstId, req.params.secondId] },
@@ -32,3 +32,5 @@ export const findChat = async (req, res) => {
     res.status(500).json(error);
   }
 };
+
+module.exports = { createChat, userChats, findChat };
